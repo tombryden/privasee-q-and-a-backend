@@ -39,9 +39,9 @@ export class Record {
   @Expose({ name: "Created At" })
   createdAt!: Date;
 
-  @Field()
+  @Field({ nullable: true })
   @Expose({ name: "Assigned To" })
-  assignedTo!: string;
+  assignedTo?: string;
 
   @Field({ nullable: true })
   @Expose({ name: "Properties" })
