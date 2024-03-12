@@ -10,7 +10,7 @@ export class CreateRecordInput {
   question!: string;
 
   @Field({ nullable: true })
-  @Length(0, 1000, {
+  @Length(1, 1000, {
     message: "Answer must be between 1 and 1000 characters",
   })
   @IsOptional()
