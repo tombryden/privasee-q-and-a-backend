@@ -15,11 +15,21 @@ import { CreateRecordInput } from "../inputs/create-record-input";
  */
 export class RecordService {
   /**
-   * List all records in the question & answers spreadsheet
-   * Not the most efficient method, but works for type safety
+   * List all records in the question & answers spreadsheet.
+   * Not the most efficient method, but works for type safety.
+   * Sorted by created date
    */
   async listAll(): Promise<Record[]> {
-    const resp = await axios.get(`/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`);
+    const resp = await axios.get(`/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`, {
+      params: {
+        sort: [
+          {
+            field: "Created At",
+            direction: "desc",
+          },
+        ],
+      },
+    });
 
     const rawRecords = resp.data.records; // this returns an array of records that have a fields property. Fields contains the records we want
 
