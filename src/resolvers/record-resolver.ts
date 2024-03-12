@@ -5,6 +5,7 @@ import { CreateRecordInput } from "../inputs/create-record-input";
 import { ClassValidationError } from "../errors/class-validation-error";
 import { GraphQLError } from "graphql";
 import { AssignRecordInput } from "../inputs/assign-record-input";
+import { UpdateQuestionAnswerInput } from "../inputs/update-question-answer-input";
 
 @Resolver(Record)
 export class RecordResolver {
@@ -31,7 +32,7 @@ export class RecordResolver {
   async createRecord(
     @Arg("createRecordInput") createRecordInput: CreateRecordInput
   ) {
-    // example of class validator error handling properly with custom code extension
+    // example of class validator error handling properly with custom code extension, this could be moved into a func
     try {
       return await this.recordService.create(createRecordInput);
     } catch (err) {
@@ -49,6 +50,24 @@ export class RecordResolver {
   ) {
     try {
       return await this.recordService.assignRecords(assignRecordInput);
+    } catch (err) {
+      if (err instanceof ClassValidationError) {
+        throw err.getGraphQLError();
+      }
+
+      throw err;
+    }
+  }
+
+  @Mutation(() => Record)
+  async updateQuestionOrAnswer(
+    @Arg("updateQuestionOrAnswerInput")
+    updateQuestionOrAnswerInput: UpdateQuestionAnswerInput
+  ) {
+    try {
+      return await this.recordService.updateQuestionOrAnswer(
+        updateQuestionOrAnswerInput
+      );
     } catch (err) {
       if (err instanceof ClassValidationError) {
         throw err.getGraphQLError();
