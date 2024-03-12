@@ -1,4 +1,5 @@
 import { Expose } from "class-transformer";
+import { IsEmail, Length } from "class-validator";
 import { Field, ID, ObjectType } from "type-graphql";
 
 @ObjectType()
@@ -13,18 +14,28 @@ export class Record {
 
   @Field()
   @Expose({ name: "Company Name" })
+  @Length(1, 100, {
+    message: "Company name must be between 1 and 100 characters",
+  })
   companyName!: string;
 
   @Field()
   @Expose({ name: "Question" })
+  @Length(1, 1000, {
+    message: "Question must be between 1 and 1000 characters",
+  })
   question!: string;
 
   @Field({ nullable: true })
   @Expose({ name: "Answer" })
+  @Length(1, 1000, {
+    message: "Answer must be between 1 and 1000 characters",
+  })
   answer?: string;
 
   @Field()
   @Expose({ name: "Updated By" })
+  @IsEmail({}, { message: "Updated by must be an email" })
   updatedBy!: string;
 
   @Field()
@@ -33,6 +44,7 @@ export class Record {
 
   @Field()
   @Expose({ name: "Created By" })
+  @IsEmail({}, { message: "Created by must be an email" })
   createdBy!: string;
 
   @Field()
@@ -41,7 +53,8 @@ export class Record {
 
   @Field({ nullable: true })
   @Expose({ name: "Assigned To" })
-  assignedTo?: string;
+  @IsEmail({}, { message: "Assignee must be an email" })
+  assignee?: string;
 
   @Field({ nullable: true })
   @Expose({ name: "Properties" })

@@ -3,6 +3,8 @@ import { AIRTABLE_BASE, AIRTABLE_TABLE } from "../vars";
 import { plainToInstance } from "class-transformer";
 import { Record } from "../models/record";
 import { CreateRecordInput } from "../inputs/create-record-input";
+import { validate } from "class-validator";
+import { ClassValidationError } from "../errors/class-validation-error";
 
 /**
  * curl "https://api.airtable.com/v0/appRlnmakjqXAYcma/tbl0BEgjWrIWS1T6o" \
@@ -64,6 +66,10 @@ export class RecordService {
    */
   async create(createRecordInput: CreateRecordInput): Promise<Record> {
     const { question, answer, assignee, createdBy } = createRecordInput;
+
+    // should really use better error handling, but ok for this exercise
+    const errors = await validate(createRecordInput);
+    if (errors.length > 0) throw new ClassValidationError(errors);
 
     const resp = await axios.post(`/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`, {
       fields: {
