@@ -40,7 +40,7 @@ export class RecordService {
       params: {
         sort: [
           {
-            field: "Created At",
+            field: "Updated At",
             direction: "desc",
           },
         ],
