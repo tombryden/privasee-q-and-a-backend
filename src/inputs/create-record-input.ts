@@ -16,10 +16,10 @@ export class CreateRecordInput {
   answer?: string;
 
   @Field({ nullable: true })
-  @IsEmail({}, { message: "Invalid email" })
+  @IsEmail({}, { message: "Assignee must be an email" })
   assignee?: string;
 
   @Field()
-  @IsEmail({}, { message: "Invalid email" })
+  @IsEmail({}, { message: "Created by must be an email" })
   createdBy!: string;
 }

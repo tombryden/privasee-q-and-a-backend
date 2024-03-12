@@ -5,6 +5,7 @@ import { Record } from "../models/record";
 import { CreateRecordInput } from "../inputs/create-record-input";
 import { validate } from "class-validator";
 import { ClassValidationError } from "../errors/class-validation-error";
+import { AssignRecordInput } from "../inputs/assign-record-input";
 
 /**
  * curl "https://api.airtable.com/v0/appRlnmakjqXAYcma/tbl0BEgjWrIWS1T6o" \
@@ -16,6 +17,18 @@ import { ClassValidationError } from "../errors/class-validation-error";
  * Pulls data from Airtable and converts into the Record model
  */
 export class RecordService {
+  /**
+   * Maps {records: [{id: abc, fields: {id: abc}}]} to record.fields Record[]
+   * @param rawRecords Response given from airtable multi record response
+   * @returns
+   */
+  private convertRecordsRespToRecordsInstance(rawRecords: Array<any>) {
+    const recordFields = rawRecords.map((r) => r.fields);
+    const records = plainToInstance(Record, recordFields as Record[]);
+
+    return records;
+  }
+
   /**
    * List all records in the question & answers spreadsheet.
    * Not the most efficient method, but works for type safety.
@@ -33,17 +46,7 @@ export class RecordService {
       },
     });
 
-    const rawRecords = resp.data.records; // this returns an array of records that have a fields property. Fields contains the records we want
-
-    // loop through record.fields and push into the array
-    const records: Array<Record> = [];
-    for (const r of rawRecords) {
-      const record = plainToInstance(Record, r.fields);
-
-      records.push(record);
-    }
-
-    return records;
+    return this.convertRecordsRespToRecordsInstance(resp.data.records);
   }
 
   /**
@@ -85,5 +88,28 @@ export class RecordService {
 
     const record = plainToInstance(Record, resp.data.fields);
     return record;
+  }
+
+  /**
+   * Sets the 'Assigned To' email for each record id
+   * @param assignRecordInput Array of record IDS to bulk assign
+   * @returns
+   */
+  async assignRecords(assignRecordInput: AssignRecordInput): Promise<Record[]> {
+    const { recordIds, assignee } = assignRecordInput;
+
+    const errors = await validate(assignRecordInput);
+    if (errors.length > 0) throw new ClassValidationError(errors);
+
+    // https://api.airtable.com/v0/{baseId}/{tableIdOrName} - wants format in records: [{id: abc, fields: {field1: "example"}}]
+    const patchBody = recordIds.map((id) => ({
+      id,
+      fields: { "Assigned To": assignee },
+    }));
+
+    const resp = await axios.patch(`/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`, {
+      records: patchBody,
+    });
+    return this.convertRecordsRespToRecordsInstance(resp.data.records);
   }
 }

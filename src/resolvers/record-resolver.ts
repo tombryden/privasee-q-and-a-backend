@@ -4,6 +4,7 @@ import { RecordService } from "../services/record-service";
 import { CreateRecordInput } from "../inputs/create-record-input";
 import { ClassValidationError } from "../errors/class-validation-error";
 import { GraphQLError } from "graphql";
+import { AssignRecordInput } from "../inputs/assign-record-input";
 
 @Resolver(Record)
 export class RecordResolver {
@@ -37,6 +38,23 @@ export class RecordResolver {
       if (err instanceof ClassValidationError) {
         throw err.getGraphQLError();
       }
+
+      throw err;
+    }
+  }
+
+  @Mutation(() => [Record])
+  async assignRecords(
+    @Arg("assignRecordInput") assignRecordInput: AssignRecordInput
+  ) {
+    try {
+      return await this.recordService.assignRecords(assignRecordInput);
+    } catch (err) {
+      if (err instanceof ClassValidationError) {
+        throw err.getGraphQLError();
+      }
+
+      throw err;
     }
   }
 }
