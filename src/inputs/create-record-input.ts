@@ -4,7 +4,7 @@ import { Field, InputType } from "type-graphql";
 @InputType()
 export class CreateRecordInput {
   @Field()
-  @Length(1, 2, {
+  @Length(1, 1000, {
     message: "Question must be between 1 and 1000 characters",
   })
   question!: string;

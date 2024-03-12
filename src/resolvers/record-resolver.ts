@@ -34,7 +34,6 @@ export class RecordResolver {
     try {
       return await this.recordService.create(createRecordInput);
     } catch (err) {
-      console.log("Caught");
       if (err instanceof ClassValidationError) {
         throw err.getGraphQLError();
       }
