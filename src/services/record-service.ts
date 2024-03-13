@@ -55,7 +55,6 @@ export class RecordService {
       threshold: 0.5,
     });
     const searchResults = fuse.search(searchTerm);
-    // console.log(searchResults);
 
     records = searchResults.map((res) => res.item);
 
