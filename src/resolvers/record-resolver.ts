@@ -43,7 +43,7 @@ export class RecordResolver {
     }
   }
 
-  @Mutation(() => [Record])
+  @Mutation(() => [Record], { description: "Bulk assign records to an email" })
   async assignRecords(
     @Arg("assignRecordInput") assignRecordInput: AssignRecordInput
   ) {
@@ -58,7 +58,9 @@ export class RecordResolver {
     }
   }
 
-  @Mutation(() => Record)
+  @Mutation(() => Record, {
+    description: "Update records with new information",
+  })
   async updateRecord(
     @Arg("updateRecordInput")
     updateRecordInput: UpdateRecordInput

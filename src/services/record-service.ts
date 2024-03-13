@@ -9,12 +9,6 @@ import { AssignRecordInput } from "../inputs/assign-record-input";
 import { UpdateRecordInput } from "../inputs/update-record-input";
 
 /**
- * curl "https://api.airtable.com/v0/appRlnmakjqXAYcma/tbl0BEgjWrIWS1T6o" \
-                -H "Authorization: Bearer patnMmwCurgFWVmDR.3ee73b6b32ffb7a1e5f6730267e8e70c027477724198297d9b53e
-3704250d745"
- */
-
-/**
  * Pulls data from Airtable and converts into the Record model
  */
 export class RecordService {
@@ -103,7 +97,6 @@ export class RecordService {
   /**
    * Sets the 'Assigned To' email for each record id
    * @param assignRecordInput Array of record IDS to bulk assign
-   * @returns
    */
   async assignRecords(assignRecordInput: AssignRecordInput): Promise<Record[]> {
     const { recordIds, assignee } = assignRecordInput;
