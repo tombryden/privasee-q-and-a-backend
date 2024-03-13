@@ -11,8 +11,8 @@ export class RecordResolver {
   private recordService = new RecordService();
 
   @Query(() => [Record], { description: "List all questions and answers" })
-  records() {
-    return this.recordService.listAll();
+  records(@Arg("searchTerm", { nullable: true }) searchTerm?: string) {
+    return this.recordService.listAll(searchTerm);
   }
 
   @Query(() => Record, {

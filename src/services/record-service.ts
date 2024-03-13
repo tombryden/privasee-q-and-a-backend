@@ -7,6 +7,7 @@ import { validate } from "class-validator";
 import { ClassValidationError } from "../errors/class-validation-error";
 import { AssignRecordInput } from "../inputs/assign-record-input";
 import { UpdateRecordInput } from "../inputs/update-record-input";
+import Fuse from "fuse.js";
 
 /**
  * Pulls data from Airtable and converts into the Record model
@@ -29,7 +30,7 @@ export class RecordService {
    * Not the most efficient method, but works for type safety.
    * Sorted by created date
    */
-  async listAll(): Promise<Record[]> {
+  async listAll(searchTerm?: string): Promise<Record[]> {
     const resp = await axios.get(`/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`, {
       params: {
         sort: [
@@ -41,7 +42,23 @@ export class RecordService {
       },
     });
 
-    return this.convertRecordsRespToRecordsInstance(resp.data.records);
+    let records = this.convertRecordsRespToRecordsInstance(resp.data.records);
+
+    if (!searchTerm) return records;
+
+    // simple fuzzy search using Fuse.js - can tailor the fuzziness to the requirements
+    const fuse = new Fuse(records, {
+      keys: ["question", "answer"],
+      includeScore: true,
+      shouldSort: true,
+      threshold: 0.5,
+    });
+    const searchResults = fuse.search(searchTerm);
+    // console.log(searchResults);
+
+    records = searchResults.map((res) => res.item);
+
+    return records;
   }
 
   /**
