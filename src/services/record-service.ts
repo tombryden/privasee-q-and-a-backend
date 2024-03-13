@@ -29,6 +29,7 @@ export class RecordService {
    * List all records in the question & answers spreadsheet.
    * Not the most efficient method, but works for type safety.
    * Sorted by created date
+   * @param searchTerm String to fuzzy search for results
    */
   async listAll(searchTerm?: string): Promise<Record[]> {
     const resp = await axios.get(`/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`, {
