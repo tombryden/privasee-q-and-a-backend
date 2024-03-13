@@ -3,9 +3,8 @@ import { Record } from "../models/record";
 import { RecordService } from "../services/record-service";
 import { CreateRecordInput } from "../inputs/create-record-input";
 import { ClassValidationError } from "../errors/class-validation-error";
-import { GraphQLError } from "graphql";
 import { AssignRecordInput } from "../inputs/assign-record-input";
-import { UpdateQuestionAnswerInput } from "../inputs/update-question-answer-input";
+import { UpdateRecordInput } from "../inputs/update-record-input";
 
 @Resolver(Record)
 export class RecordResolver {
@@ -60,14 +59,12 @@ export class RecordResolver {
   }
 
   @Mutation(() => Record)
-  async updateQuestionOrAnswer(
-    @Arg("updateQuestionOrAnswerInput")
-    updateQuestionOrAnswerInput: UpdateQuestionAnswerInput
+  async updateRecord(
+    @Arg("updateRecordInput")
+    updateRecordInput: UpdateRecordInput
   ) {
     try {
-      return await this.recordService.updateQuestionOrAnswer(
-        updateQuestionOrAnswerInput
-      );
+      return await this.recordService.updateRecord(updateRecordInput);
     } catch (err) {
       if (err instanceof ClassValidationError) {
         throw err.getGraphQLError();

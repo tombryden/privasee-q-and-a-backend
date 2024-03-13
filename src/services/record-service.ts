@@ -6,7 +6,7 @@ import { CreateRecordInput } from "../inputs/create-record-input";
 import { validate } from "class-validator";
 import { ClassValidationError } from "../errors/class-validation-error";
 import { AssignRecordInput } from "../inputs/assign-record-input";
-import { UpdateQuestionAnswerInput } from "../inputs/update-question-answer-input";
+import { UpdateRecordInput } from "../inputs/update-record-input";
 
 /**
  * curl "https://api.airtable.com/v0/appRlnmakjqXAYcma/tbl0BEgjWrIWS1T6o" \
@@ -123,12 +123,11 @@ export class RecordService {
     return this.convertRecordsRespToRecordsInstance(resp.data.records);
   }
 
-  async updateQuestionOrAnswer(
-    updateQuestionOrAnswerInput: UpdateQuestionAnswerInput
-  ) {
-    const { recordId, question, answer } = updateQuestionOrAnswerInput;
+  async updateRecord(updateRecordInput: UpdateRecordInput) {
+    const { recordId, question, answer, questionDescription, properties } =
+      updateRecordInput;
 
-    const errors = await validate(updateQuestionOrAnswerInput);
+    const errors = await validate(updateRecordInput);
     if (errors.length > 0) throw new ClassValidationError(errors);
 
     if (!question && !answer)
@@ -136,7 +135,14 @@ export class RecordService {
 
     const resp = await axios.patch(
       `/${AIRTABLE_BASE}/${AIRTABLE_TABLE}/${recordId}`,
-      { fields: { Question: question, Answer: answer } }
+      {
+        fields: {
+          Question: question,
+          Answer: answer,
+          "Question Description": questionDescription,
+          Properties: properties,
+        },
+      }
     );
 
     const record = plainToInstance(Record, resp.data.fields);
