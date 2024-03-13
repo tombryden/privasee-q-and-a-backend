@@ -22,7 +22,7 @@ export class UpdateRecordInput {
 
   @Field({ nullable: true })
   @IsString()
-  @Matches(/(\w+:\w+,?)+/)
+  @Matches(/(\w+:\w+,?)+|^$/)
   @IsOptional()
   properties?: string;
 
