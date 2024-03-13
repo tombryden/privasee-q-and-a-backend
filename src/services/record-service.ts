@@ -69,7 +69,14 @@ export class RecordService {
    * @param createRecordInput
    */
   async create(createRecordInput: CreateRecordInput): Promise<Record> {
-    const { question, answer, assignee, createdBy } = createRecordInput;
+    const {
+      question,
+      questionDescription,
+      answer,
+      assignee,
+      createdBy,
+      properties,
+    } = createRecordInput;
 
     // should really use better error handling, but ok for this exercise
     const errors = await validate(createRecordInput);
@@ -78,12 +85,14 @@ export class RecordService {
     const resp = await axios.post(`/${AIRTABLE_BASE}/${AIRTABLE_TABLE}`, {
       fields: {
         Question: question,
+        "Question Description": questionDescription,
         Answer: answer,
         "Assigned To": assignee,
         "Updated By": createdBy,
         "Created By": createdBy,
         _companyId: 63297,
         "Company Name": "Test Company Limited",
+        Properties: properties,
       },
     });
 

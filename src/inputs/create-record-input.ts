@@ -1,4 +1,10 @@
-import { IsEmail, IsOptional, Length } from "class-validator";
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  Length,
+  Matches,
+} from "class-validator";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
@@ -8,6 +14,13 @@ export class CreateRecordInput {
     message: "Question must be between 1 and 1000 characters",
   })
   question!: string;
+
+  @Field({ nullable: true })
+  @Length(1, 1000, {
+    message: "Question description must be between 1 and 1000 characters",
+  })
+  @IsOptional()
+  questionDescription?: string;
 
   @Field({ nullable: true })
   @Length(1, 1000, {
@@ -24,4 +37,10 @@ export class CreateRecordInput {
   @Field()
   @IsEmail({}, { message: "Created by must be an email" })
   createdBy!: string;
+
+  @Field({ nullable: true })
+  @IsString()
+  @Matches(/(\w+:\w+,?)+/)
+  @IsOptional()
+  properties?: string;
 }
