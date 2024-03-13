@@ -2,7 +2,9 @@ import { Expose } from "class-transformer";
 import { IsEmail, Length } from "class-validator";
 import { Field, ID, ObjectType } from "type-graphql";
 
-@ObjectType()
+@ObjectType({
+  description: "Represents a row in the Question / Answers Airtable sheet",
+})
 export class Record {
   @Field(() => ID)
   @Expose()
